@@ -1,10 +1,9 @@
-
 import { useState } from "react";
 import { WorldMap } from "@/components/WorldMap";
 import { ControlPanel } from "@/components/ControlPanel";
 import { SearchBar } from "@/components/SearchBar";
 import { StatsPanel } from "@/components/StatsPanel";
-import { MapGlobeIcon } from "lucide-react";
+import { GlobeIcon } from "lucide-react";
 
 export interface CountryData {
   id: string;
@@ -95,7 +94,7 @@ const Index = () => {
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-3">
-            <MapGlobeIcon className="h-8 w-8 text-blue-600" />
+            <GlobeIcon className="h-8 w-8 text-blue-600" />
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Travel Heatmap</h1>
               <p className="text-sm text-gray-600">Track your adventures around the world</p>
