@@ -1,7 +1,7 @@
+
 import { useState } from "react";
 import { WorldMap } from "@/components/WorldMap";
 import { TopControls } from "@/components/TopControls";
-import { TravelStats } from "@/components/TravelStats";
 
 export interface CountryData {
   id: string;
@@ -118,12 +118,6 @@ const Index = () => {
         uniqueCountries={uniqueCountries}
         countries={countries}
         onCountryDecrease={handleCountryDecrease}
-      />
-
-      {/* Travel Stats */}
-      <TravelStats 
-        totalVisits={totalVisits}
-        uniqueCountries={uniqueCountries}
       />
 
       {/* Fullscreen Map */}

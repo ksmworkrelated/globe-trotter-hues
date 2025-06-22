@@ -99,6 +99,24 @@ export const WorldMap = ({ countries, onCountryClick, mapLevel }: WorldMapProps)
           );
         })}
       </svg>
+
+      {/* Minimalist legend in bottom right */}
+      <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded shadow-lg">
+        <div className="text-xs text-gray-600 mb-2">Visits</div>
+        <div className="flex gap-2">
+          {[1, 2, 3, 4, 5].map((visits) => (
+            <div key={visits} className="text-center">
+              <div
+                className="w-4 h-4 border border-black mb-1"
+                style={{ 
+                  backgroundColor: visits >= 5 ? '#000000' : `rgba(59, 130, 246, ${0.2 + (visits * 0.15)})` 
+                }}
+              />
+              <div className="text-xs">{visits >= 5 ? '5+' : visits}</div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

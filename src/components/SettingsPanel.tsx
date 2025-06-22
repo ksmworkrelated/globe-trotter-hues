@@ -60,8 +60,8 @@ export const SettingsPanel = ({
         onClick={onClose}
       />
       
-      {/* Settings Panel - Right Side */}
-      <div className="fixed top-0 right-0 h-full w-80 bg-white shadow-xl z-40 flex flex-col">
+      {/* Settings Panel */}
+      <div className="fixed top-0 left-0 h-full w-80 bg-white shadow-xl z-40 flex flex-col">
         <div className="p-4 border-b flex items-center justify-between">
           <h2 className="text-lg font-semibold flex items-center gap-2">
             <GlobeIcon className="h-5 w-5" />
@@ -98,31 +98,6 @@ export const SettingsPanel = ({
                 </div>
                 <div className="text-xs text-gray-500 text-center">
                   {Math.round((uniqueCountries / 195) * 100)}% of world explored
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Visit Legend */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base">Visit Legend</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="text-xs text-gray-600 mb-2">Visits</div>
-                  <div className="flex gap-2">
-                    {[1, 2, 3, 4, 5].map((visits) => (
-                      <div key={visits} className="text-center">
-                        <div
-                          className="w-4 h-4 border border-black mb-1"
-                          style={{ 
-                            backgroundColor: visits >= 5 ? '#000000' : `rgba(59, 130, 246, ${0.2 + (visits * 0.15)})` 
-                          }}
-                        />
-                        <div className="text-xs">{visits >= 5 ? '5+' : visits}</div>
-                      </div>
-                    ))}
-                  </div>
                 </div>
               </CardContent>
             </Card>
