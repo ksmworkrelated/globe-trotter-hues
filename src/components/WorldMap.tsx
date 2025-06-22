@@ -32,102 +32,90 @@ export const WorldMap = ({ countries, onCountryClick, mapLevel }: WorldMapProps)
 
   const getCountryStroke = () => '#000000';
 
-  const getCountryOpacity = (countryId: string) => {
-    const countryData = countries.get(countryId);
-    if (!countryData) return 1;
-    return 0.3 + (countryData.visitCount * 0.15);
-  };
-
   return (
-    <div className="w-full">
-      <div className="text-center mb-4">
-        <h2 className="text-xl font-semibold text-gray-800 mb-2">
-          World Travel Heatmap {mapLevel === 'state' ? '(State Level)' : '(Country Level)'}
-        </h2>
-        <p className="text-sm text-gray-600">
-          Click on countries to mark your visits. Each visit deepens the color (max 5 visits).
-        </p>
-      </div>
-
-      <div className="bg-white border-2 border-gray-200 rounded-lg overflow-hidden">
-        <svg
-          viewBox="0 0 800 500"
-          className="w-full h-auto"
-          style={{ minHeight: '400px' }}
-        >
-          {/* Ocean background */}
-          <rect width="800" height="500" fill="#F8FAFC" />
+    <div className="w-full h-full bg-white">
+      <svg
+        viewBox="0 0 800 500"
+        className="w-full h-full"
+        preserveAspectRatio="xMidYMid meet"
+      >
+        {/* Ocean/Background */}
+        <rect width="800" height="500" fill="#FFFFFF" />
+        
+        {/* Sample countries */}
+        {sampleCountries.map((country) => {
+          const countryData = countries.get(country.id);
+          const isHovered = hoveredCountry === country.id;
           
-          {/* Sample countries */}
-          {sampleCountries.map((country) => {
-            const countryData = countries.get(country.id);
-            const isHovered = hoveredCountry === country.id;
-            
-            return (
-              <g key={country.id}>
-                <path
-                  d={country.path}
-                  fill={getCountryFill(country.id)}
-                  stroke={getCountryStroke()}
-                  strokeWidth={isHovered ? 2 : 1}
-                  opacity={getCountryOpacity(country.id)}
-                  className="cursor-pointer transition-all duration-200 hover:brightness-110"
-                  onClick={() => onCountryClick(country.id, country.name)}
-                  onMouseEnter={() => setHoveredCountry(country.id)}
-                  onMouseLeave={() => setHoveredCountry(null)}
-                />
-                
-                {/* Country label on hover */}
-                {isHovered && (
+          return (
+            <g key={country.id}>
+              <path
+                d={country.path}
+                fill={getCountryFill(country.id)}
+                stroke={getCountryStroke()}
+                strokeWidth={isHovered ? 2 : 1}
+                className="cursor-pointer transition-all duration-200 hover:stroke-2"
+                onClick={() => onCountryClick(country.id, country.name)}
+                onMouseEnter={() => setHoveredCountry(country.id)}
+                onMouseLeave={() => setHoveredCountry(null)}
+              />
+              
+              {/* Country tooltip on hover */}
+              {isHovered && (
+                <g>
+                  <rect
+                    x="10"
+                    y="10"
+                    width="200"
+                    height="40"
+                    fill="rgba(0, 0, 0, 0.8)"
+                    rx="4"
+                    className="pointer-events-none"
+                  />
                   <text
-                    x="50"
-                    y="30"
-                    fill="#1F2937"
-                    fontSize="14"
+                    x="20"
+                    y="25"
+                    fill="white"
+                    fontSize="12"
                     fontWeight="bold"
                     className="pointer-events-none"
                   >
                     {country.name}
-                    {countryData && ` (${countryData.visitCount} visit${countryData.visitCount !== 1 ? 's' : ''})`}
                   </text>
-                )}
-              </g>
-            );
-          })}
-          
-          {/* Legend */}
-          <g transform="translate(20, 420)">
-            <text x="0" y="0" fill="#374151" fontSize="12" fontWeight="bold">Visits:</text>
-            {[1, 2, 3, 4, 5].map((visits, index) => {
-              const x = index * 40;
-              return (
-                <g key={visits} transform={`translate(${x}, 10)`}>
-                  <rect
-                    width="20"
-                    height="15"
-                    fill="#3B82F6"
-                    opacity={0.3 + (visits * 0.15)}
-                    stroke="#000"
-                    strokeWidth="1"
-                  />
-                  <text x="25" y="12" fill="#374151" fontSize="10">{visits}</text>
+                  {countryData && (
+                    <text
+                      x="20"
+                      y="40"
+                      fill="white"
+                      fontSize="10"
+                      className="pointer-events-none"
+                    >
+                      {countryData.visitCount} visit{countryData.visitCount !== 1 ? 's' : ''}
+                    </text>
+                  )}
                 </g>
-              );
-            })}
-            <g transform="translate(200, 10)">
-              <rect width="20" height="15" fill="#000000" stroke="#000" strokeWidth="1" />
-              <text x="25" y="12" fill="#374151" fontSize="10">5+</text>
+              )}
             </g>
-          </g>
-        </svg>
-      </div>
+          );
+        })}
+      </svg>
 
-      {/* Note */}
-      <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-        <p className="text-sm text-blue-800">
-          <strong>Note:</strong> This is a simplified demo map. In a full implementation, 
-          this would use a comprehensive world map dataset with accurate country/state boundaries.
-        </p>
+      {/* Minimalist legend in bottom right */}
+      <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded shadow-lg">
+        <div className="text-xs text-gray-600 mb-2">Visits</div>
+        <div className="flex gap-2">
+          {[1, 2, 3, 4, 5].map((visits) => (
+            <div key={visits} className="text-center">
+              <div
+                className="w-4 h-4 border border-black mb-1"
+                style={{ 
+                  backgroundColor: visits >= 5 ? '#000000' : `rgba(59, 130, 246, ${0.2 + (visits * 0.15)})` 
+                }}
+              />
+              <div className="text-xs">{visits >= 5 ? '5+' : visits}</div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

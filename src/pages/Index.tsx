@@ -1,9 +1,7 @@
+
 import { useState } from "react";
 import { WorldMap } from "@/components/WorldMap";
-import { ControlPanel } from "@/components/ControlPanel";
-import { SearchBar } from "@/components/SearchBar";
-import { StatsPanel } from "@/components/StatsPanel";
-import { GlobeIcon } from "lucide-react";
+import { TopControls } from "@/components/TopControls";
 
 export interface CountryData {
   id: string;
@@ -54,11 +52,11 @@ const Index = () => {
       const existing = newCountries.get(countryId);
       
       if (existing) {
-        const newCount = Math.min(existing.visitCount + 1, 5);
+        const newCount = existing.visitCount + 1;
         newCountries.set(countryId, {
           ...existing,
           visitCount: newCount,
-          color: getColorForVisitCount(newCount, existing.color)
+          color: newCount >= 5 ? '#000000' : getColorForVisitCount(newCount, existing.color)
         });
       } else {
         const baseColor = settings.colorMode === 'random' ? getRandomColor() : settings.uniformColor;
@@ -74,9 +72,29 @@ const Index = () => {
     });
   };
 
+  const handleCountryDecrease = (countryId: string) => {
+    setCountries(prev => {
+      const newCountries = new Map(prev);
+      const existing = newCountries.get(countryId);
+      
+      if (existing && existing.visitCount > 0) {
+        const newCount = existing.visitCount - 1;
+        if (newCount === 0) {
+          newCountries.delete(countryId);
+        } else {
+          newCountries.set(countryId, {
+            ...existing,
+            visitCount: newCount,
+            color: newCount >= 5 ? '#000000' : getColorForVisitCount(newCount, existing.color)
+          });
+        }
+      }
+      
+      return newCountries;
+    });
+  };
+
   const handleSearch = (countryName: string) => {
-    // In a real implementation, this would find the country by name
-    // For now, we'll simulate it
     const countryId = countryName.toLowerCase().replace(/\s+/g, '-');
     handleCountryClick(countryId, countryName);
   };
@@ -89,37 +107,25 @@ const Index = () => {
   const uniqueCountries = countries.size;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center gap-3">
-            <GlobeIcon className="h-8 w-8 text-blue-600" />
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Travel Heatmap</h1>
-              <p className="text-sm text-gray-600">Track your adventures around the world</p>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="h-screen w-full relative overflow-hidden">
+      {/* Top Controls */}
+      <TopControls 
+        settings={settings}
+        onSettingsChange={setSettings}
+        onReset={resetMap}
+        onSearch={handleSearch}
+        totalVisits={totalVisits}
+        uniqueCountries={uniqueCountries}
+        countries={countries}
+        onCountryDecrease={handleCountryDecrease}
+      />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Controls */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-          <SearchBar onSearch={handleSearch} />
-          <ControlPanel settings={settings} onSettingsChange={setSettings} onReset={resetMap} />
-          <StatsPanel totalVisits={totalVisits} uniqueCountries={uniqueCountries} />
-        </div>
-
-        {/* Map */}
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <WorldMap 
-            countries={countries}
-            onCountryClick={handleCountryClick}
-            mapLevel={settings.mapLevel}
-          />
-        </div>
-      </div>
+      {/* Fullscreen Map */}
+      <WorldMap 
+        countries={countries}
+        onCountryClick={handleCountryClick}
+        mapLevel={settings.mapLevel}
+      />
     </div>
   );
 };
