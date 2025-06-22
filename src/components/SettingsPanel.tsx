@@ -39,7 +39,7 @@ export const SettingsPanel = ({
   const handleMapLevelChange = (value: string) => {
     onSettingsChange({
       ...settings,
-      mapLevel: value as 'country' | 'state' | 'city'
+      mapLevel: value as 'country' | 'state'
     });
   };
 
@@ -173,10 +173,6 @@ export const SettingsPanel = ({
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="state" id="state" />
                   <Label htmlFor="state" className="text-sm">State Level</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="city" id="city" />
-                  <Label htmlFor="city" className="text-sm">City Level</Label>
                 </div>
               </RadioGroup>
             </div>
