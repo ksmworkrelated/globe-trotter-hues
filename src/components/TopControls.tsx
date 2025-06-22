@@ -38,10 +38,32 @@ export const TopControls = ({
     }
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && searchTerm.trim()) {
+      onSearch(searchTerm.trim());
+      setSearchTerm("");
+    }
+  };
+
   return (
     <>
-      {/* Top Controls Bar */}
-      <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
+      {/* Top Controls Bar - Moved to Right */}
+      <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+        {/* Search Bar */}
+        <form onSubmit={handleSubmit} className="flex items-center">
+          <div className="relative">
+            <SearchIcon className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <Input
+              type="text"
+              placeholder="Search country..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyPress={handleKeyPress}
+              className="pl-10 pr-4 py-2 w-64 bg-white/90 backdrop-blur-sm"
+            />
+          </div>
+        </form>
+
         {/* Settings Button */}
         <Button
           variant="outline"
@@ -51,23 +73,6 @@ export const TopControls = ({
         >
           <SettingsIcon className="h-4 w-4" />
         </Button>
-
-        {/* Search Bar */}
-        <form onSubmit={handleSubmit} className="flex items-center gap-2">
-          <div className="relative">
-            <SearchIcon className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <Input
-              type="text"
-              placeholder="Search country..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 w-64 bg-white/90 backdrop-blur-sm"
-            />
-          </div>
-          <Button type="submit" size="sm" className="bg-blue-600 hover:bg-blue-700">
-            Add
-          </Button>
-        </form>
       </div>
 
       {/* Settings Panel */}
