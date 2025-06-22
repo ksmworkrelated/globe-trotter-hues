@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { WorldMap } from "@/components/WorldMap";
+import { LeafletMap } from "@/components/LeafletMap";
 import { TopControls } from "@/components/TopControls";
 import { TravelStats } from "@/components/TravelStats";
 
@@ -8,11 +9,12 @@ export interface CountryData {
   name: string;
   visitCount: number;
   color: string;
+  baseColor: string; // Store the original base color for recalculation
 }
 
 export interface MapSettings {
   colorMode: 'random' | 'uniform';
-  mapLevel: 'country' | 'state';
+  mapLevel: 'country' | 'state' | 'city';
   uniformColor: string;
 }
 
@@ -37,7 +39,7 @@ const Index = () => {
   const getColorForVisitCount = (count: number, baseColor: string) => {
     if (count >= 5) return '#000000';
     
-    const opacity = Math.min(0.2 + (count * 0.2), 1);
+    const opacity = Math.min(0.2 + (count * 0.15), 1);
     const hex = baseColor.replace('#', '');
     const r = parseInt(hex.substr(0, 2), 16);
     const g = parseInt(hex.substr(2, 2), 16);
@@ -56,7 +58,7 @@ const Index = () => {
         newCountries.set(countryId, {
           ...existing,
           visitCount: newCount,
-          color: newCount >= 5 ? '#000000' : getColorForVisitCount(newCount, existing.color)
+          color: getColorForVisitCount(newCount, existing.baseColor)
         });
       } else {
         const baseColor = settings.colorMode === 'random' ? getRandomColor() : settings.uniformColor;
@@ -64,7 +66,8 @@ const Index = () => {
           id: countryId,
           name: countryName,
           visitCount: 1,
-          color: getColorForVisitCount(1, baseColor)
+          color: getColorForVisitCount(1, baseColor),
+          baseColor: baseColor
         });
       }
       
@@ -85,7 +88,7 @@ const Index = () => {
           newCountries.set(countryId, {
             ...existing,
             visitCount: newCount,
-            color: newCount >= 5 ? '#000000' : getColorForVisitCount(newCount, existing.color)
+            color: getColorForVisitCount(newCount, existing.baseColor)
           });
         }
       }
@@ -126,8 +129,8 @@ const Index = () => {
         uniqueCountries={uniqueCountries}
       />
 
-      {/* Fullscreen Map */}
-      <WorldMap 
+      {/* Fullscreen Leaflet Map */}
+      <LeafletMap 
         countries={countries}
         onCountryClick={handleCountryClick}
         mapLevel={settings.mapLevel}
