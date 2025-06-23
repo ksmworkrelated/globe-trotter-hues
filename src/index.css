@@ -100,4 +100,11 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Ensure Leaflet map and page background are always pure white */
+  html,
+  body,
+  .leaflet-container {
+    background: #fff !important;
+  }
 }
